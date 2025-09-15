@@ -9,7 +9,7 @@ defmodule CounterWeb.Application do
   def start(_type, _args) do
     children = [
       CounterWebWeb.Telemetry,
-      CounterWeb.Repo,
+      # CounterWeb.Repo,
       {DNSCluster, query: Application.get_env(:counter_web, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: CounterWeb.PubSub},
       # Start a worker by calling: CounterWeb.Worker.start_link(arg)
