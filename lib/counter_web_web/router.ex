@@ -24,8 +24,7 @@ defmodule CounterWebWeb.Router do
     pipe_through :api
     post "/compliance-proof", CounterController, :compliance_proof
     post "/logic-proof", CounterController, :logic_proof
-    # post "/delta-proof"
-
+    post "/delta-proof", CounterController, :delta_proof
   end
 
   # Other scopes may use custom stacks.

@@ -6,4 +6,8 @@ defmodule CounterWebWeb.CounterJSON do
   def logic_proofs(%{consumed_proof: consumed_proof, created_proof: created_proof}) do
     %{consumed_proof: consumed_proof, created_proof: created_proof}
   end
+
+  def delta_proof(%{transaction: transaction}) do
+    %{transaction: transaction}
+  end
 end

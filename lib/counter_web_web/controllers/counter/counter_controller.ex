@@ -42,7 +42,7 @@ defmodule CounterWebWeb.CounterController do
         conn,
         params = %{
           "consumed" => _,
-          "created_nf_key" => _,
+          "consumed_nf_key" => _,
           "created" => _,
           "sender_keypair" => _,
           "receiver_keypair" => _
@@ -50,15 +50,25 @@ defmodule CounterWebWeb.CounterController do
       ) do
     params = Anoma.Json.keys_to_atoms(params)
     # decode the individual parts of the params into their respective structs and values
-    created_nf_key = Base.decode64!(params.created_nf_key)
+    consumed_nf_key = Base.decode64!(params.consumed_nf_key)
     consumed = Resource.from_map(params.consumed)
     created = Resource.from_map(params.created)
     sender_keypair = Keypair.from_map(params.sender_keypair)
     receiver_keypair = Keypair.from_map(params.receiver_keypair)
 
     {consumed_proof, created_proof} =
-      Proof.logic(consumed, created_nf_key, created, sender_keypair, receiver_keypair)
+      Proof.logic(consumed, consumed_nf_key, created, sender_keypair, receiver_keypair)
 
+    # conver tfrom LogicVerifier to LogicVerifierInputs for the webclients
+    consumed_proof = Anoma.Arm.convert(consumed_proof)
+    created_proof = Anoma.Arm.convert(created_proof)
     render(conn, :logic_proofs, %{consumed_proof: consumed_proof, created_proof: created_proof})
+  end
+
+  def delta_proof(conn, params = %{"transaction" => _}) do
+    params = Anoma.Json.keys_to_atoms(params)
+    transaction = Anoma.Arm.Transaction.from_map(params.transaction)
+    transaction = Anoma.Arm.Transaction.generate_delta_proof(transaction)
+    render(conn, :delta_proof, %{transaction: transaction})
   end
 end
